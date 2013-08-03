@@ -233,20 +233,20 @@ int get_queues_info(PGconn* conn, queue_info_t** queues_info) {
       return -3;
     }
     for (i = 0; i < size; ++i) {
-      strncpy(queues_info[i]->name, (char*)PQgetvalue(result, i, 0), ARRAY_SIZE(queues_info[i]->name));
-      queues_info[i]->ntables = atoi(PQgetvalue(result, i, 1));
-      queues_info[i]->cur_table = atoi(PQgetvalue(result, i, 2));
-      SAVE_INTERVAL(&queues_info[i]->rotation_period, temp_interval, PQgetvalue(result, i, 3), "rotation_period");
-      SAVE_TIMESTAMP(&queues_info[i]->switch_time, PQgetvalue(result, i, 4), "switch_time");
-      queues_info[i]->external_ticker = (int)atoi(PQgetvalue(result, i, 5));
-      queues_info[i]->ticker_paused = (int)atoi(PQgetvalue(result, i, 6));
-      queues_info[i]->ticker_max_count = atoi(PQgetvalue(result, i, 7));
-      SAVE_INTERVAL(&queues_info[i]->ticker_max_lag, temp_interval, PQgetvalue(result, i, 8), "ticker_max_lag");
-      SAVE_INTERVAL(&queues_info[i]->ticker_idle_period, temp_interval, PQgetvalue(result, i, 9), "ticker_idle_period");
-      SAVE_INTERVAL(&queues_info[i]->ticker_lag, temp_interval, PQgetvalue(result, i, 10), "ticker_lag");
-      queues_info[i]->ev_per_sec = atof(PQgetvalue(result, i, 11));
-      queues_info[i]->ev_new = atol(PQgetvalue(result, i, 12));
-      queues_info[i]->last_tick_id = (tick_id_t)atol(PQgetvalue(result, i, 13));
+      strncpy((*queues_info)[i].name, (char*)PQgetvalue(result, i, 0), ARRAY_SIZE((*queues_info)[i].name));
+      (*queues_info)[i].ntables = atoi(PQgetvalue(result, i, 1));
+      (*queues_info)[i].cur_table = atoi(PQgetvalue(result, i, 2));
+      SAVE_INTERVAL(&(*queues_info)[i].rotation_period, temp_interval, PQgetvalue(result, i, 3), "rotation_period");
+      SAVE_TIMESTAMP(&(*queues_info)[i].switch_time, PQgetvalue(result, i, 4), "switch_time");
+      (*queues_info)[i].external_ticker = (int)atoi(PQgetvalue(result, i, 5));
+      (*queues_info)[i].ticker_paused = (int)atoi(PQgetvalue(result, i, 6));
+      (*queues_info)[i].ticker_max_count = atoi(PQgetvalue(result, i, 7));
+      SAVE_INTERVAL(&(*queues_info)[i].ticker_max_lag, temp_interval, PQgetvalue(result, i, 8), "ticker_max_lag");
+      SAVE_INTERVAL(&(*queues_info)[i].ticker_idle_period, temp_interval, PQgetvalue(result, i, 9), "ticker_idle_period");
+      SAVE_INTERVAL(&(*queues_info)[i].ticker_lag, temp_interval, PQgetvalue(result, i, 10), "ticker_lag");
+      (*queues_info)[i].ev_per_sec = atof(PQgetvalue(result, i, 11));
+      (*queues_info)[i].ev_new = atol(PQgetvalue(result, i, 12));
+      (*queues_info)[i].last_tick_id = (tick_id_t)atol(PQgetvalue(result, i, 13));
     }
   } else {
     error_number = PQresultStatus(result);
@@ -301,14 +301,14 @@ int get_consumer_info(PGconn* conn, const char* queue_name, const char* consumer
       return -3;
     }
     for (i = 0; i < size; ++i) {
-      strncpy(consumer_info[i]->queue_name, (char*)PQgetvalue(result, i, 0), ARRAY_SIZE(consumer_info[i]->queue_name));
-      strncpy(consumer_info[i]->consumer_name, (char*)PQgetvalue(result, i, 1), ARRAY_SIZE(consumer_info[i]->consumer_name));
-      SAVE_INTERVAL(&consumer_info[i]->lag, temp_interval, PQgetvalue(result, i, 2), "lag");
-      SAVE_INTERVAL(&consumer_info[i]->last_seen, temp_interval, PQgetvalue(result, i, 3), "last_seen");
-      consumer_info[i]->last_tick = (tick_id_t)atol(PQgetvalue(result, i, 4));
-      consumer_info[i]->current_batch = (batch_id_t)atol(PQgetvalue(result, i, 5));
-      consumer_info[i]->next_tick = (tick_id_t)atol(PQgetvalue(result, i, 6));
-      consumer_info[i]->pending_events = atol(PQgetvalue(result, i, 7));
+      strncpy((*consumer_info)[i].queue_name, (char*)PQgetvalue(result, i, 0), ARRAY_SIZE((*consumer_info)[i].queue_name));
+      strncpy((*consumer_info)[i].consumer_name, (char*)PQgetvalue(result, i, 1), ARRAY_SIZE((*consumer_info)[i].consumer_name));
+      SAVE_INTERVAL(&(*consumer_info)[i].lag, temp_interval, PQgetvalue(result, i, 2), "lag");
+      SAVE_INTERVAL(&(*consumer_info)[i].last_seen, temp_interval, PQgetvalue(result, i, 3), "last_seen");
+      (*consumer_info)[i].last_tick = (tick_id_t)atol(PQgetvalue(result, i, 4));
+      (*consumer_info)[i].current_batch = (batch_id_t)atol(PQgetvalue(result, i, 5));
+      (*consumer_info)[i].next_tick = (tick_id_t)atol(PQgetvalue(result, i, 6));
+      (*consumer_info)[i].pending_events = atol(PQgetvalue(result, i, 7));
     }
   } else {
     error_number = PQresultStatus(result);
@@ -341,14 +341,14 @@ int get_consumers_info(PGconn* conn, const char* queue_name, consumer_info_t** c
       return -3;
     }
     for (i = 0; i < size; ++i) {
-      strncpy(consumers_info[i]->queue_name, (char*)PQgetvalue(result, i, 0), ARRAY_SIZE(consumers_info[i]->queue_name));
-      strncpy(consumers_info[i]->consumer_name, (char*)PQgetvalue(result, i, 1), ARRAY_SIZE(consumers_info[i]->consumer_name));
-      SAVE_INTERVAL(&consumers_info[i]->lag, temp_interval, PQgetvalue(result, i, 2), "lag");
-      SAVE_INTERVAL(&consumers_info[i]->last_seen, temp_interval, PQgetvalue(result, i, 3), "last_seen");
-      consumers_info[i]->last_tick = (tick_id_t)atol(PQgetvalue(result, i, 4));
-      consumers_info[i]->current_batch = (batch_id_t)atol(PQgetvalue(result, i, 5));
-      consumers_info[i]->next_tick = (tick_id_t)atol(PQgetvalue(result, i, 6));
-      consumers_info[i]->pending_events = atol(PQgetvalue(result, i, 7));
+      strncpy((*consumers_info)[i].queue_name, (char*)PQgetvalue(result, i, 0), ARRAY_SIZE((*consumers_info)[i].queue_name));
+      strncpy((*consumers_info)[i].consumer_name, (char*)PQgetvalue(result, i, 1), ARRAY_SIZE((*consumers_info)[i].consumer_name));
+      SAVE_INTERVAL(&(*consumers_info)[i].lag, temp_interval, PQgetvalue(result, i, 2), "lag");
+      SAVE_INTERVAL(&(*consumers_info)[i].last_seen, temp_interval, PQgetvalue(result, i, 3), "last_seen");
+      (*consumers_info)[i].last_tick = (tick_id_t)atol(PQgetvalue(result, i, 4));
+      (*consumers_info)[i].current_batch = (batch_id_t)atol(PQgetvalue(result, i, 5));
+      (*consumers_info)[i].next_tick = (tick_id_t)atol(PQgetvalue(result, i, 6));
+      (*consumers_info)[i].pending_events = atol(PQgetvalue(result, i, 7));
     }
   } else {
     error_number = PQresultStatus(result);
