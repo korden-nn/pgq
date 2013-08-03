@@ -28,10 +28,6 @@ int main(int argc, char* argv[]) {
   if (ret == -1) {
     fprintf(stderr, "%s (%d)", get_error_text(), get_error_number());
   }
-  /*event_id = insert_event(conn, "test_queue", "type", "data");
-  printf("event_id = %ld\n", event_id);
-  event_id = insert_event_ex(conn, "test_queue", "2", "111", "1", "2", "3", "4");
-  printf("event_id = %ld\n", event_id);*/
   ret = get_queues_info(conn, &info);
   printf("queues info: ret=%d\n", ret);
   if (ret < 0)
